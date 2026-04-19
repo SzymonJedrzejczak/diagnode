@@ -1,0 +1,24 @@
+services:
+  #postgres
+  postgresDatabase:
+    image: postgres:15-alpine #lekka wersja z postgresem
+    container_name: diagnode-postgres #nazwa kontenera na postgresa
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: diagnode #ustawienia bazy danych
+    ports:
+      - "5432:5432" #port dla postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data #Persystencja danych (żeby nie zniknęły po restarcie
+#redis
+  redisDatabase:
+    image: redis:7-alpine
+    container_name: diagnode-redis #nazwa kontenera na redisa
+    ports:
+      - "6379:6379" #port dla redis
+    command: redis-server --notify-keyspace-events Ex #powiadomienia o końcu sesji (wyśle event o konieczności zapisania
+    #stanu do postgresa)
+
+volumes:
+  postgres_data:
