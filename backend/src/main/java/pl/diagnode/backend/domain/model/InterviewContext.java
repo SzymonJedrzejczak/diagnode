@@ -11,41 +11,45 @@ import static java.util.Collections.unmodifiableSortedMap;
 /**
  * Short-lived interview session kept in Redis. Immutable by design — every state
  * transition produces a new instance via {@link Builder}.
+ * <p>
+ * Collections exposed via accessors are always unmodifiable views, regardless of
+ * how the record was constructed (builder, deserialization, direct constructor call).
  */
 @RedisHash(value = "interview_sessions", timeToLive = 300)
 public record InterviewContext(
-        /* Bot user id (e.g. Telegram id) — primary key in Redis. */
         @Id String userId,
-        /* Current position within the question graph. */
         UUID currentNodeId,
-        /* Diagnostic points aggregated per category: category → sum. */
         SortedMap<String, Integer> collectedPoints,
-        /* Full answer log: nodeId → answer text. */
         Map<String, String> answers,
-        /* Legal flag — whether the user consents to LLM process of their text. */
         boolean aiConsentGiven,
-        /* Dynamic user profile extracted via node mapping keys. */
         Map<String, String> profileData
 ) {
 
-    /** Compact constructor guarantees non-null collections, so callers never see NPEs. */
+    /**
+     * Compact constructor — the single place that guarantees two invariants:
+     * collections are never {@code null}, and they are always exposed as
+     * unmodifiable views (defensive copies are taken to decouple the record
+     * from the caller's references).
+     */
     public InterviewContext {
-        collectedPoints = collectedPoints == null
+        collectedPoints = unmodifiableSortedMap(collectedPoints == null
                 ? new TreeMap<>()
-                : collectedPoints;
-        answers = answers == null
+                : new TreeMap<>(collectedPoints));
+        answers = unmodifiableMap(answers == null
                 ? new HashMap<>()
-                : answers;
-        profileData = profileData == null
+                : new HashMap<>(answers));
+        profileData = unmodifiableMap(profileData == null
                 ? new HashMap<>()
-                : profileData;
+                : new HashMap<>(profileData));
     }
 
     public static Builder builder() {
         return new Builder();
     }
 
-    /** Copy builder — handy when mutating a single field on an existing context. */
+    /**
+     * Copy builder — handy when mutating a single field on an existing context.
+     */
     public Builder toBuilder() {
         return new Builder()
                 .userId(userId)
@@ -107,10 +111,10 @@ public record InterviewContext(
             return new InterviewContext(
                     userId,
                     currentNodeId,
-                    unmodifiableSortedMap(collectedPoints),
-                    unmodifiableMap(answers),
+                    collectedPoints,
+                    answers,
                     aiConsentGiven,
-                    unmodifiableMap(profileData)
+                    profileData
             );
         }
     }
