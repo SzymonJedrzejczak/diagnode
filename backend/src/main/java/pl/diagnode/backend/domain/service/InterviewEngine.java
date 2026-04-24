@@ -3,7 +3,6 @@ package pl.diagnode.backend.domain.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.diagnode.backend.domain.mapper.InterviewMapper;
-import pl.diagnode.backend.domain.model.ContextDTO;
 import pl.diagnode.backend.domain.model.InterviewContext;
 import pl.diagnode.backend.domain.model.Node;
 import pl.diagnode.backend.domain.model.enums.NodeType;
@@ -58,10 +57,9 @@ public class InterviewEngine {
         Objects.requireNonNull(userId, "userId must not be null");
 
         // 1. Znajdujemy lub tworzymy punkt startowy
-        ContextDTO sessionLookup = findContext(userId)
-                .orElseGet(() -> createNewContext(userId));
 
-        InterviewContext initialState = sessionLookup.context();
+        InterviewContext initialState = findContext(userId)
+                .orElseGet(() -> createNewContext(userId));
 
         // 2. Pobieramy definicję pytania i odpowiedni "silnik" (handler)
         Node currentNode = loadNode(initialState.currentNodeId());
@@ -74,34 +72,31 @@ public class InterviewEngine {
         persist(updated);
 
         // Zwracamy węzeł, na którym użytkownik wylądował po tej operacji
-        return currentNode.getNextNode();
+        return loadNode(updated.currentNodeId());
     }
 
-    private Optional<ContextDTO> findContext(String userId) {
+    private Optional<InterviewContext> findContext(String userId) {
         return getContextFromCache(userId)
                 .or(() -> getContextFromHistory(userId));
     }
 
-    private Optional<ContextDTO> getContextFromCache(String userId) {
-        return interviewContextCache.findById(userId)
-                .map(context -> new ContextDTO(context, true));
+    private Optional<InterviewContext> getContextFromCache(String userId) {
+        return interviewContextCache.findById(userId);
     }
 
-    private Optional<ContextDTO> getContextFromHistory(String userId) {
+    private Optional<InterviewContext> getContextFromHistory(String userId) {
         return interviewHistoryRepository.findById(userId)
-                .map(history -> new ContextDTO(interviewMapper.toContext(history), false));
+                .map(interviewMapper::toContext);
     }
 
-    private ContextDTO createNewContext(String userId) {
+    private InterviewContext createNewContext(String userId) {
         Node startingNode = nodeRepository.findByNodeKey(startNodeKey)
                 .orElseThrow(() -> new IllegalStateException("Missing starting node: " + startNodeKey));
 
-        InterviewContext newContext = InterviewContext.builder()
+        return InterviewContext.builder()
                 .userId(userId)
                 .currentNodeId(startingNode.getId())
                 .build();
-
-        return new ContextDTO(newContext, false);
     }
 
     private Node loadNode(java.util.UUID nodeId) {

@@ -16,14 +16,12 @@ import static java.util.Collections.unmodifiableSortedMap;
  * how the record was constructed (builder, deserialization, direct constructor call).
  */
 @RedisHash(value = "interview_sessions", timeToLive = 300)
-public record InterviewContext(
-        @Id String userId,
-        UUID currentNodeId,
-        SortedMap<String, Integer> collectedPoints,
-        Map<String, String> answers,
-        boolean aiConsentGiven,
-        Map<String, String> profileData
-) {
+public record InterviewContext(@Id String userId,
+                               UUID currentNodeId,
+                               SortedMap<String, Integer> collectedPoints,
+                               Map<String, String> answers,
+                               boolean aiConsentGiven,
+                               Map<String, String> profileData) {
 
     /**
      * Compact constructor — the single place that guarantees two invariants:
