@@ -47,6 +47,10 @@ public class InterviewHistory {
     @Column(name = "answers")
     private HashMap<String, String> answers = new HashMap<>();
 
+    /** Legal flag — whether the user consents to LLM process of their text. */
+    @Column(name = "ai_consent_given", nullable = false)
+    private boolean aiConsentGiven;
+
     /** Dynamic user profile (e.g. {@code userName -> Marek}). */
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "profile_data")
@@ -91,6 +95,14 @@ public class InterviewHistory {
 
     public void setAnswers(Map<String, String> answers) {
         this.answers = answers == null ? new HashMap<>() : new HashMap<>(answers);
+    }
+
+    public boolean isAiConsentGiven() {
+        return aiConsentGiven;
+    }
+
+    public void setAiConsentGiven(boolean aiConsentGiven) {
+        this.aiConsentGiven = aiConsentGiven;
     }
 
     public Map<String, String> getProfileData() {
