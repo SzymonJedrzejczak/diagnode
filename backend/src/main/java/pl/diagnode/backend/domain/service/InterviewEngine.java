@@ -10,10 +10,7 @@ import pl.diagnode.backend.domain.repository.InterviewContextCache;
 import pl.diagnode.backend.domain.repository.InterviewHistoryRepository;
 import pl.diagnode.backend.domain.repository.NodeRepository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,26 +50,46 @@ public class InterviewEngine {
     /**
      * Processes a single user input and returns the next node to present.
      */
-    public Node processStep(String userId, String userInput) {
+    public List<Node> start(String userId) {
+        Objects.requireNonNull(userId, "userId must not be null");
+        InterviewContext context = findContext(userId)
+                .orElseGet(() -> createNewContext(userId));
+        return advanceAutomaticNodes(context);
+    }
+
+    public List<Node> answer(String userId, String userInput) {
         Objects.requireNonNull(userId, "userId must not be null");
 
-        // 1. Znajdujemy lub tworzymy punkt startowy
+        InterviewContext context = findContext(userId)
+                .orElseThrow(() -> new IllegalStateException("No active session for user: " + userId));
 
-        InterviewContext initialState = findContext(userId)
-                .orElseGet(() -> createNewContext(userId));
+        Node currentNode = loadNode(context.currentNodeId());
 
-        // 2. Pobieramy definicję pytania i odpowiedni "silnik" (handler)
-        Node currentNode = loadNode(initialState.currentNodeId());
         NodeHandler handler = resolveHandler(currentNode.getNodeType());
 
-        // 3. Logika biznesowa: transformacja starego stanu w nowy
-        InterviewContext updated = handler.handleNode(currentNode, initialState, userInput);
+        if (!(handler instanceof InputNodeHandler inputHandler)) {
+            throw new IllegalStateException("Current node does not accept input: " + currentNode.getNodeType());
+        }
 
-        // 4. Zabezpieczenie danych (Write-Through do Redis i Postgres)
+        InterviewContext updated = inputHandler.handle(currentNode, context, userInput);
+
         persist(updated);
+        return advanceAutomaticNodes(updated);
+    }
 
-        // Zwracamy węzeł, na którym użytkownik wylądował po tej operacji
-        return loadNode(updated.currentNodeId());
+    private List<Node> advanceAutomaticNodes(InterviewContext context) {
+        List<Node> nodesToSend = new ArrayList<>();
+        Node node = loadNode(context.currentNodeId());
+
+        while (resolveHandler(node.getNodeType()) instanceof AutomaticNodeHandler automaticHandler) {
+            nodesToSend.add(node);
+            context = automaticHandler.handle(node, context);
+            persist(context);
+            node = loadNode(context.currentNodeId());
+        }
+
+        nodesToSend.add(node);
+        return nodesToSend;
     }
 
     private Optional<InterviewContext> findContext(String userId) {

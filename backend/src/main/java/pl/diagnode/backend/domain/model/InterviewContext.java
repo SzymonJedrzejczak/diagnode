@@ -7,6 +7,8 @@ import java.util.*;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSortedMap;
+import static java.util.Optional.ofNullable;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
 /**
  * Short-lived interview session kept in Redis. Immutable by design — every state
@@ -115,5 +117,27 @@ public record InterviewContext(@Id String userId,
                     profileData
             );
         }
+
+    }
+
+    public InterviewContext advanceToNextNode(Node node) {
+        return ofNullable(node.getNextNode())
+                .map(Node::getId)
+                .map(nextId -> toBuilder().currentNodeId(nextId).build())
+                .orElseThrow(() -> new IllegalStateException("Node '%s' has no next node".formatted(node.getId())));
+    }
+
+    public InterviewContext withProfileEntry(Optional<String> key, String value) {
+        return key.map(k -> withProfileEntry(k, value))
+                .orElse(this);
+    }
+
+    public InterviewContext withProfileEntry(String key, String value) {
+        if (isBlank(key)) {
+            return this;
+        }
+        Map<String, String> updated = new HashMap<>(profileData);
+        updated.put(key, value);
+        return toBuilder().profileData(updated).build();
     }
 }
