@@ -2,7 +2,7 @@ package pl.diagnode.backend.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.diagnode.backend.domain.model.Node;
+import pl.diagnode.backend.domain.model.nodes.Node;
 import pl.diagnode.backend.domain.service.InterviewEngine;
 
 import java.util.List;

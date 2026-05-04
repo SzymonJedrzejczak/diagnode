@@ -2,6 +2,7 @@ package pl.diagnode.backend.domain.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import pl.diagnode.backend.domain.model.nodes.Node;
 
 import java.util.*;
 

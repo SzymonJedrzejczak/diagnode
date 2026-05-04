@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.diagnode.backend.domain.mapper.InterviewMapper;
 import pl.diagnode.backend.domain.model.InterviewContext;
-import pl.diagnode.backend.domain.model.Node;
+import pl.diagnode.backend.domain.model.nodes.Node;
 import pl.diagnode.backend.domain.model.enums.NodeType;
 import pl.diagnode.backend.domain.repository.InterviewContextCache;
 import pl.diagnode.backend.domain.repository.InterviewHistoryRepository;
