@@ -2,7 +2,7 @@ package pl.diagnode.backend.domain.repository;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.diagnode.backend.domain.model.Node;
+import pl.diagnode.backend.domain.model.nodes.Node;
 
 import java.util.Optional;
 import java.util.UUID;

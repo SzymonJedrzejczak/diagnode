@@ -1,4 +1,4 @@
-package pl.diagnode.backend.domain.model;
+package pl.diagnode.backend.domain.model.nodes;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;

@@ -3,7 +3,7 @@ package pl.diagnode.backend.domain.service.handler;
 import org.springframework.stereotype.Service;
 import pl.diagnode.backend.domain.exception.ValidationException;
 import pl.diagnode.backend.domain.model.InterviewContext;
-import pl.diagnode.backend.domain.model.Node;
+import pl.diagnode.backend.domain.model.nodes.Node;
 import pl.diagnode.backend.domain.model.enums.NodeType;
 import pl.diagnode.backend.domain.service.InputNodeHandler;
 
