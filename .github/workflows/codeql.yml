@@ -1,0 +1,32 @@
+name: Check code vulnerabilities
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 8 * * 1'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5.2.0
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Initiate CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java
+
+      - name: Build project
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Analyze vulnerabilities
+        uses: github/codeql-action/analyze@v3
