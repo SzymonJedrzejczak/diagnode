@@ -14,19 +14,19 @@ class TestcontainersConfiguration {
 	@Bean
 	@ServiceConnection
 	KafkaContainer kafkaContainer() {
-		return new KafkaContainer(DockerImageName.parse("apache/kafka-native:latest"));
+		return new KafkaContainer(DockerImageName.parse("apache/kafka:3.8.0"));
 	}
 
 	@Bean
 	@ServiceConnection
 	PostgreSQLContainer postgresContainer() {
-		return new PostgreSQLContainer(DockerImageName.parse("postgres:latest"));
+		return new PostgreSQLContainer(DockerImageName.parse("postgres:15-alpine"));
 	}
 
 	@Bean
 	@ServiceConnection(name = "redis")
 	GenericContainer<?> redisContainer() {
-		return new GenericContainer<>(DockerImageName.parse("redis:latest")).withExposedPorts(6379);
+		return new GenericContainer<>(DockerImageName.parse("redis:7-alpine")).withExposedPorts(6379);
 	}
 
 }
