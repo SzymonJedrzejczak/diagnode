@@ -18,6 +18,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * Base entity representing a step (action) in the interview graph.
  * Uses single-table inheritance for fast reads — all node subtypes live in one table.
@@ -77,8 +79,8 @@ public abstract class Node {
         return nodeType;
     }
 
-    public Category getCategory() {
-        return category;
+    public Optional<Category> getCategory() {
+        return ofNullable(category);
     }
 
     public String getNodeKey() {
@@ -91,7 +93,7 @@ public abstract class Node {
 
     /** Null-safe accessor for the mapping key. */
     public Optional<String> getMappingKey() {
-        return Optional.ofNullable(mappingKey);
+        return ofNullable(mappingKey);
     }
 
     @Override
