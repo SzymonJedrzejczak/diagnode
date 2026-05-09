@@ -141,4 +141,16 @@ public record InterviewContext(@Id String userId,
         updated.put(key, value);
         return toBuilder().profileData(updated).build();
     }
+
+    public InterviewContext withAnswers(UUID nodeId, String answer) {
+        Map<String, String> updated = new HashMap<>(answers);
+        updated.put(nodeId.toString(), answer);
+        return toBuilder().answers(updated).build();
+    }
+
+    public InterviewContext withCollectedPoints(Map<String, Integer> points) {
+        TreeMap<String, Integer> updated = new TreeMap<>(collectedPoints);
+        points.forEach((key, value) -> updated.merge(key, value, Integer::sum));
+        return toBuilder().collectedPoints(updated).build();
+    }
 }
