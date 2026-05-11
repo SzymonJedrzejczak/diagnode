@@ -1,9 +1,16 @@
 name: Check code vulnerabilities
+
 on:
   pull_request:
     branches: [main]
   schedule:
     - cron: '0 8 * * 1'
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
