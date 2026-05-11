@@ -9,6 +9,9 @@ import pl.diagnode.backend.domain.model.enums.NodeType;
 import pl.diagnode.backend.domain.repository.InterviewContextCache;
 import pl.diagnode.backend.domain.repository.InterviewHistoryRepository;
 import pl.diagnode.backend.domain.repository.NodeRepository;
+import pl.diagnode.backend.domain.service.handler.AutomaticNodeHandler;
+import pl.diagnode.backend.domain.service.handler.InputNodeHandler;
+import pl.diagnode.backend.domain.service.handler.NodeHandler;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -6,8 +6,8 @@ import jakarta.persistence.OneToMany;
 import pl.diagnode.backend.domain.model.NodeOption;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static jakarta.persistence.FetchType.EAGER;
 
@@ -18,7 +18,7 @@ public class SingleAnswerQuestionNode extends Node {
     @OneToMany(mappedBy = "node", fetch = EAGER)
     private List<NodeOption> options = new ArrayList<>();
 
-    public List<NodeOption> getOptions() {
-        return Collections.unmodifiableList(options);
+    public Optional<List<NodeOption>> getOptions() {
+        return Optional.of(options);
     }
 }

@@ -1,4 +1,4 @@
-package pl.diagnode.backend.domain.service.handler;
+package pl.diagnode.backend.domain.service.handler.impl;
 
 import org.springframework.stereotype.Service;
 import pl.diagnode.backend.domain.exception.ValidationException;
@@ -6,7 +6,7 @@ import pl.diagnode.backend.domain.model.InterviewContext;
 import pl.diagnode.backend.domain.model.nodes.Node;
 import pl.diagnode.backend.domain.model.enums.NodeType;
 import pl.diagnode.backend.domain.port.AiAnalysisClient;
-import pl.diagnode.backend.domain.service.InputNodeHandler;
+import pl.diagnode.backend.domain.service.handler.InputNodeHandler;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static pl.diagnode.backend.domain.model.enums.NodeType.OPEN_QUESTION;
