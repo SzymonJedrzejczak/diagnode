@@ -11,9 +11,11 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import pl.diagnode.backend.domain.model.NodeOption;
 import pl.diagnode.backend.domain.model.enums.Category;
 import pl.diagnode.backend.domain.model.enums.NodeType;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -89,6 +91,10 @@ public abstract class Node {
 
     public Node getNextNode() {
         return nextNode;
+    }
+
+    public Optional<List<NodeOption>> getOptions() {
+        return Optional.empty();
     }
 
     /** Null-safe accessor for the mapping key. */
