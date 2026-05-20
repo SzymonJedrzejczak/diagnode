@@ -7,6 +7,8 @@ import pl.diagnode.backend.domain.model.nodes.Node;
 import pl.diagnode.backend.domain.model.enums.NodeType;
 import pl.diagnode.backend.domain.port.AiAnalysisClient;
 import pl.diagnode.backend.domain.service.handler.InputNodeHandler;
+import pl.diagnode.backend.domain.service.handler.input.NodeInput;
+import pl.diagnode.backend.domain.service.handler.input.OpenAnswer;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static pl.diagnode.backend.domain.model.enums.NodeType.OPEN_QUESTION;
@@ -26,7 +28,11 @@ public class OpenQuestionHandler implements InputNodeHandler {
     }
 
     @Override
-    public InterviewContext handle(Node node, InterviewContext context, String userInput) {
+    public InterviewContext handle(Node node, InterviewContext context, NodeInput input) {
+        if (!(input instanceof OpenAnswer(String userInput))) {
+            throw new IllegalStateException("Nieoczekiwany typ inputu: " + input.getClass().getSimpleName());
+        }
+
         if (isBlank(userInput)) {
             throw new ValidationException("Odpowiedź nie może być pusta");
         }

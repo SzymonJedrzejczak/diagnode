@@ -102,6 +102,47 @@ public abstract class Node {
         return ofNullable(mappingKey);
     }
 
+    public static Builder builder(Node node) {
+        return new Builder(node);
+    }
+    public static final class Builder {
+        private final Node node;
+
+        private Builder(Node node) {
+            this.node = node;
+        }
+
+        public Builder mappingKey(String mappingKey) {
+            node.mappingKey = mappingKey;
+            return this;
+        }
+
+        public Builder nextNode(Node nextNode) {
+            node.nextNode = nextNode;
+            return this;
+        }
+
+        public Builder category(Category category) {
+            node.category = category;
+            return this;
+        }
+
+        public Builder id(UUID id) {
+            node.id = id;
+            return this;
+        }
+
+        public Builder nodeContent(String nodeContent) {
+            node.nodeContent = nodeContent;
+            return this;
+        }
+
+        public Node build() {
+            return node;
+        }
+
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;
@@ -114,4 +155,5 @@ public abstract class Node {
         // Constant hashCode is a recommended practice for JPA entities with generated IDs.
         return Objects.hashCode(id);
     }
+
 }

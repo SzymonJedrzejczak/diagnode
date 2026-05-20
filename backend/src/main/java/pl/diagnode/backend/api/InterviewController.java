@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.diagnode.backend.api.model.*;
 import pl.diagnode.backend.domain.model.nodes.Node;
 import pl.diagnode.backend.domain.service.InterviewEngine;
+import pl.diagnode.backend.domain.service.handler.input.ChoiceAnswer;
+import pl.diagnode.backend.domain.service.handler.input.OpenAnswer;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,14 +31,14 @@ public class InterviewController {
     @PostMapping("/{userId}/answer/open")
     public ResponseEntity<InterviewResponse> answerOpen(@PathVariable String userId,
                                                         @RequestBody AnswerRequest request) {
-        List<Node> nodes = interviewEngine.answer(userId, request.userInput());
+        List<Node> nodes = interviewEngine.answer(userId, new OpenAnswer(request.userInput()));
         return ResponseEntity.ok(toResponse(nodes));
     }
 
     @PostMapping("/{userId}/answer/choice")
     public ResponseEntity<InterviewResponse> answerChoice(@PathVariable String userId,
                                                           @RequestBody SingleChoiceAnswer request) {
-        List<Node> nodes = interviewEngine.answer(userId, request.optionId());
+        List<Node> nodes = interviewEngine.answer(userId, new ChoiceAnswer(request.optionId()));
         return ResponseEntity.ok(toResponse(nodes));
     }
 
