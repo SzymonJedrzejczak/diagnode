@@ -12,6 +12,7 @@ import pl.diagnode.backend.domain.repository.NodeRepository;
 import pl.diagnode.backend.domain.service.handler.AutomaticNodeHandler;
 import pl.diagnode.backend.domain.service.handler.InputNodeHandler;
 import pl.diagnode.backend.domain.service.handler.NodeHandler;
+import pl.diagnode.backend.domain.service.handler.input.NodeInput;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,7 +61,7 @@ public class InterviewEngine {
         return advanceAutomaticNodes(context);
     }
 
-    public List<Node> answer(String userId, String userInput) {
+    public List<Node> answer(String userId, NodeInput input) {
         Objects.requireNonNull(userId, "userId must not be null");
 
         InterviewContext context = findContext(userId)
@@ -74,7 +75,7 @@ public class InterviewEngine {
             throw new IllegalStateException("Current node does not accept input: " + currentNode.getNodeType());
         }
 
-        InterviewContext updated = inputHandler.handle(currentNode, context, userInput);
+        InterviewContext updated = inputHandler.handle(currentNode, context, input);
 
         persist(updated);
         return advanceAutomaticNodes(updated);
