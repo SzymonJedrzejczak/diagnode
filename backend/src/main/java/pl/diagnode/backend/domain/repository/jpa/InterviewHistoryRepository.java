@@ -1,4 +1,4 @@
-package pl.diagnode.backend.domain.repository;
+package pl.diagnode.backend.domain.repository.jpa;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
